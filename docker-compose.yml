@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   gantt-dashboard:
@@ -20,7 +20,7 @@ services:
     image: nginx:alpine
     ports:
       - "80:80"
-      - "443:443"  
+      - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:

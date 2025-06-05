@@ -1,0 +1,9 @@
+{
+  "admin": {
+    "password": "ЗАМІНІТЬ_НА_РЕАЛЬНИЙ_ХЕШ_ПАРОЛЯ",
+    "role": "admin",
+    "created_at": "2025-06-01T00:00:00.000000",
+    "created_by": "system",
+    "last_login": null
+  }
+}
