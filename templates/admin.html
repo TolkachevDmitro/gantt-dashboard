@@ -12,6 +12,18 @@
         <h1 class="text-3xl font-bold">Адміністративна панель</h1>
         <div class="space-x-4">
           <a
+            href="{{ url_for('goods_management_page') }}"
+            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          >
+            Управління товарами
+          </a>
+          <a
+            href="{{ url_for('warehouses_management_page') }}"
+            class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+          >
+            Управління складами
+          </a>
+          <a
             href="{{ url_for('security_panel') }}"
             class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
           >

@@ -1,5 +1,42 @@
 [
   {
+    "type": "delete",
+    "rectangleId": "1747661591859",
+    "oldValue": "Прямоугольник существовал",
+    "newValue": "Удален прямоугольник",
+    "dateTime": "05.06.2025, 16:55:37",
+    "user": "Dmitro"
+  },
+  {
+    "type": "edit",
+    "rectangleId": "1747661591859",
+    "orderNumber": "1747661591859",
+    "warehouseName": "Харків",
+    "warehouseStatusColor": "#FF69B4",
+    "oldValue": "white",
+    "newValue": "#FF69B4",
+    "comment": "Изменение статуса склада",
+    "dateTime": "2025.06.05 16:55:28",
+    "user": "Dmitro"
+  },
+  {
+    "type": "delete",
+    "rectangleId": "1747066572784",
+    "oldValue": "Прямоугольник существовал",
+    "newValue": "Удален прямоугольник",
+    "dateTime": "05.06.2025, 16:55:22",
+    "user": "Dmitro"
+  },
+  {
+    "type": "edit",
+    "rectangleId": "1747066572784",
+    "oldValue": "30.05.2025",
+    "newValue": "21.05.2025",
+    "comment": "Изменение даты начала (перетаскивание)",
+    "dateTime": "2025.06.05 16:55:16",
+    "user": "Dmitro"
+  },
+  {
     "type": "edit",
     "rectangleId": "1747066572784",
     "oldValue": "26.05.2025",

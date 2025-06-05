@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Управління товарами - Календар‑Гант</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+      .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border: none;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      }
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold">Управління товарами</h1>
+        <div class="space-x-4">
+          <a
+            href="{{ url_for('admin_panel') }}"
+            class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+          >
+            Назад до адмін панелі
+          </a>
+          <a
+            href="{{ url_for('index') }}"
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            До календаря
+          </a>
+        </div>
+      </div>
+
+      <!-- Flash messages -->
+      <div id="flashMessages" class="mb-6"></div>
+
+      <!-- Control Panel -->
+      <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+        <h2 class="text-xl font-semibold mb-4">Дії з товарами</h2>
+        <div class="flex flex-wrap gap-4">
+          <button
+            id="addGoodBtn"
+            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          >
+            + Додати товар
+          </button>
+          <button
+            id="exportBtn"
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            📥 Завантажити Excel
+          </button>
+          <label
+            for="importFile"
+            class="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 cursor-pointer"
+          >
+            📤 Імпортувати Excel
+            <input
+              type="file"
+              id="importFile"
+              accept=".xlsx,.xls"
+              class="hidden"
+            />
+          </label>
+        </div>
+      </div>
+
+      <!-- Search and Filter -->
+      <div class="bg-white p-4 rounded-lg shadow-md mb-6">
+        <div class="flex flex-wrap gap-4 items-center">
+          <div class="flex-1 min-w-64">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Пошук товарів..."
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <select
+            id="categoryFilter"
+            class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Всі категорії</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Goods List -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="px-6 py-4 bg-gray-50 border-b">
+          <h2 class="text-lg font-semibold">Список товарів</h2>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Категорія
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Назва товару
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Вага (кг)
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Коефіцієнт паллети
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Дії
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              id="goodsTableBody"
+              class="bg-white divide-y divide-gray-200"
+            >
+              <!-- Goods will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Good Modal -->
+    <div id="goodModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalTitle" class="text-xl font-semibold mb-4">Додати товар</h2>
+        <form id="goodForm">
+          <div class="mb-4">
+            <label
+              for="category"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Категорія *
+            </label>
+            <input
+              type="text"
+              id="category"
+              name="category"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Введіть назву категорії"
+            />
+          </div>
+          <div class="mb-4">
+            <label
+              for="name"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Назва товару *
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Введіть назву товару"
+            />
+          </div>
+          <div class="mb-4">
+            <label
+              for="weight"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Вага (кг) *
+            </label>
+            <input
+              type="number"
+              id="weight"
+              name="weight"
+              step="0.01"
+              min="0"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="0.00"
+            />
+          </div>
+          <div class="mb-6">
+            <label
+              for="palletCoef"
+              class="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Коефіцієнт паллети *
+            </label>
+            <input
+              type="number"
+              id="palletCoef"
+              name="palletCoef"
+              step="0.01"
+              min="0"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="1.00"
+            />
+          </div>
+          <div class="flex justify-end space-x-4">
+            <button
+              type="button"
+              id="cancelBtn"
+              class="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
+            >
+              Скасувати
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Зберегти
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Global variables
+      let goodsData = {};
+      let editMode = false;
+      let editingGood = null;
+
+      // DOM elements
+      const modal = document.getElementById("goodModal");
+      const modalTitle = document.getElementById("modalTitle");
+      const goodForm = document.getElementById("goodForm");
+      const addGoodBtn = document.getElementById("addGoodBtn");
+      const exportBtn = document.getElementById("exportBtn");
+      const importFile = document.getElementById("importFile");
+      const searchInput = document.getElementById("searchInput");
+      const categoryFilter = document.getElementById("categoryFilter");
+      const goodsTableBody = document.getElementById("goodsTableBody");
+      const flashMessages = document.getElementById("flashMessages");
+      const closeModal = document.querySelector(".close");
+      const cancelBtn = document.getElementById("cancelBtn");
+
+      // Initialize
+      document.addEventListener("DOMContentLoaded", function () {
+        loadGoods();
+
+        // Event listeners
+        addGoodBtn.addEventListener("click", openAddModal);
+        exportBtn.addEventListener("click", exportGoods);
+        importFile.addEventListener("change", importGoods);
+        searchInput.addEventListener("input", filterGoods);
+        categoryFilter.addEventListener("change", filterGoods);
+        goodForm.addEventListener("submit", saveGood);
+        closeModal.addEventListener("click", closeGoodModal);
+        cancelBtn.addEventListener("click", closeGoodModal);
+
+        // Close modal when clicking outside
+        window.addEventListener("click", function (event) {
+          if (event.target === modal) {
+            closeGoodModal();
+          }
+        });
+      });
+
+      // Load goods from server
+      async function loadGoods() {
+        try {
+          const response = await fetch("/api/goods_management");
+          if (response.ok) {
+            goodsData = await response.json();
+            updateCategoryFilter();
+            renderGoods();
+          } else {
+            showFlashMessage("Помилка завантаження товарів", "error");
+          }
+        } catch (error) {
+          showFlashMessage("Помилка з'єднання з сервером", "error");
+        }
+      }
+
+      // Update category filter options
+      function updateCategoryFilter() {
+        const categories = Object.keys(goodsData).sort();
+        categoryFilter.innerHTML = '<option value="">Всі категорії</option>';
+        categories.forEach((category) => {
+          const option = document.createElement("option");
+          option.value = category;
+          option.textContent = category;
+          categoryFilter.appendChild(option);
+        });
+      }
+
+      // Render goods table
+      function renderGoods(filteredData = null) {
+        const dataToRender = filteredData || goodsData;
+        goodsTableBody.innerHTML = "";
+
+        Object.keys(dataToRender).forEach((category) => {
+          dataToRender[category].forEach((item) => {
+            const row = document.createElement("tr");
+            row.className = "hover:bg-gray-50";
+            row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${category}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
+                          item.name
+                        }</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
+                          item.weight
+                        }</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
+                          item.pallet_coef || 1.0
+                        }</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <button onclick="editGood('${category}', '${
+              item.name
+            }')" 
+                                    class="text-blue-600 hover:text-blue-800 mr-3">
+                                Редагувати
+                            </button>
+                            <button onclick="deleteGood('${category}', '${
+              item.name
+            }')" 
+                                    class="text-red-600 hover:text-red-800">
+                                Видалити
+                            </button>
+                        </td>
+                    `;
+            goodsTableBody.appendChild(row);
+          });
+        });
+      }
+
+      // Filter goods
+      function filterGoods() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedCategory = categoryFilter.value;
+
+        let filteredData = {};
+
+        Object.keys(goodsData).forEach((category) => {
+          if (!selectedCategory || category === selectedCategory) {
+            const filteredItems = goodsData[category].filter((item) =>
+              item.name.toLowerCase().includes(searchTerm)
+            );
+            if (filteredItems.length > 0) {
+              filteredData[category] = filteredItems;
+            }
+          }
+        });
+
+        renderGoods(filteredData);
+      }
+
+      // Open add modal
+      function openAddModal() {
+        editMode = false;
+        editingGood = null;
+        modalTitle.textContent = "Додати товар";
+        goodForm.reset();
+        document.getElementById("palletCoef").value = "1.00";
+        modal.style.display = "block";
+      }
+
+      // Edit good
+      function editGood(category, name) {
+        editMode = true;
+        editingGood = { category, name };
+        modalTitle.textContent = "Редагувати товар";
+
+        const item = goodsData[category].find((item) => item.name === name);
+        if (item) {
+          document.getElementById("category").value = category;
+          document.getElementById("name").value = item.name;
+          document.getElementById("weight").value = item.weight;
+          document.getElementById("palletCoef").value = item.pallet_coef || 1.0;
+        }
+
+        modal.style.display = "block";
+      }
+
+      // Delete good
+      async function deleteGood(category, name) {
+        if (
+          !confirm(
+            `Ви впевнені, що хочете видалити товар "${name}" з категорії "${category}"?`
+          )
+        ) {
+          return;
+        }
+
+        try {
+          const response = await fetch("/api/goods_management", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ category, name }),
+          });
+
+          const result = await response.json();
+          if (response.ok) {
+            showFlashMessage(result.message, "success");
+            loadGoods();
+          } else {
+            showFlashMessage(result.error, "error");
+          }
+        } catch (error) {
+          showFlashMessage("Помилка видалення товару", "error");
+        }
+      }
+
+      // Save good
+      async function saveGood(event) {
+        event.preventDefault();
+
+        const formData = new FormData(goodForm);
+        const goodData = {
+          category: formData.get("category").trim(),
+          name: formData.get("name").trim(),
+          weight: parseFloat(formData.get("weight")),
+          pallet_coef: parseFloat(formData.get("palletCoef")),
+        };
+
+        if (editMode) {
+          goodData.old_category = editingGood.category;
+          goodData.old_name = editingGood.name;
+        }
+
+        try {
+          const response = await fetch("/api/goods_management", {
+            method: editMode ? "PUT" : "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(goodData),
+          });
+
+          const result = await response.json();
+          if (response.ok) {
+            showFlashMessage(result.message, "success");
+            closeGoodModal();
+            loadGoods();
+          } else {
+            showFlashMessage(result.error, "error");
+          }
+        } catch (error) {
+          showFlashMessage("Помилка збереження товару", "error");
+        }
+      }
+
+      // Close modal
+      function closeGoodModal() {
+        modal.style.display = "none";
+        goodForm.reset();
+        editMode = false;
+        editingGood = null;
+      }
+
+      // Export goods
+      function exportGoods() {
+        window.location.href = "/api/goods_export";
+      }
+
+      // Import goods
+      async function importGoods(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+          const response = await fetch("/api/goods_import", {
+            method: "POST",
+            body: formData,
+          });
+
+          const result = await response.json();
+          if (response.ok) {
+            showFlashMessage(result.message, "success");
+            loadGoods();
+          } else {
+            showFlashMessage(result.error, "error");
+          }
+        } catch (error) {
+          showFlashMessage("Помилка імпорту файлу", "error");
+        }
+
+        // Reset file input
+        event.target.value = "";
+      }
+
+      // Show flash message
+      function showFlashMessage(message, type) {
+        const alertClass =
+          type === "error"
+            ? "bg-red-100 text-red-700 border-red-300"
+            : type === "success"
+            ? "bg-green-100 text-green-700 border-green-300"
+            : "bg-blue-100 text-blue-700 border-blue-300";
+
+        const alert = document.createElement("div");
+        alert.className = `p-3 rounded border ${alertClass} mb-4`;
+        alert.textContent = message;
+
+        flashMessages.appendChild(alert);
+
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+          if (alert.parentNode) {
+            alert.remove();
+          }
+        }, 5000);
+      }
+    </script>
+  </body>
+</html>
