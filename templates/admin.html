@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Адміністративна панель - Календар‑Гант</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold">Адміністративна панель</h1>
+        <div class="space-x-4">
+          <a
+            href="{{ url_for('security_panel') }}"
+            class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
+          >
+            Панель безпеки
+          </a>
+          <a
+            href="{{ url_for('index') }}"
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Повернутися до календаря
+          </a>
+          <a
+            href="{{ url_for('logout') }}"
+            class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+          >
+            Вийти
+          </a>
+        </div>
+      </div>
+
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <div
+        class="mb-4 p-3 rounded {% if category == 'error' %}bg-red-100 text-red-700{% elif category == 'success' %}bg-green-100 text-green-700{% else %}bg-blue-100 text-blue-700{% endif %}"
+      >
+        {{ message }}
+      </div>
+      {% endfor %} {% endif %} {% endwith %}
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Статистика користувачів -->
+        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-md mb-4">
+          <h2 class="text-xl font-semibold mb-4">Статистика користувачів</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="text-center p-4 bg-blue-50 rounded-lg">
+              <div class="text-2xl font-bold text-blue-600">
+                {{ stats.total }}
+              </div>
+              <div class="text-sm text-gray-600">Всього користувачів</div>
+            </div>
+            <div class="text-center p-4 bg-purple-50 rounded-lg">
+              <div class="text-2xl font-bold text-purple-600">
+                {{ stats.super_admins }}
+              </div>
+              <div class="text-sm text-gray-600">Супер Адмінів</div>
+            </div>
+            <div class="text-center p-4 bg-green-50 rounded-lg">
+              <div class="text-2xl font-bold text-green-600">
+                {{ stats.users }}
+              </div>
+              <div class="text-sm text-gray-600">Користувачів</div>
+            </div>
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+              <div class="text-2xl font-bold text-gray-600">
+                {{ stats.viewers }}
+              </div>
+              <div class="text-sm text-gray-600">Спостерігачів</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Додавання нового користувача -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h2 class="text-xl font-semibold mb-4">Додати нового користувача</h2>
+          <form
+            method="POST"
+            action="{{ url_for('add_user') }}"
+            class="space-y-4"
+            id="addUserForm"
+          >
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <div>
+              <label
+                for="username"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Ім'я користувача *
+              </label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                required
+                minlength="3"
+                pattern="[a-zA-Z0-9_-]+"
+                title="Тільки букви, цифри, _ та - (мінімум 3 символи)"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Мінімум 3 символи"
+              />
+              <div class="text-xs text-gray-500 mt-1">
+                Тільки букви, цифри, підкреслення та дефіс
+              </div>
+            </div>
+
+            <div>
+              <label
+                for="password"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Пароль *
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                minlength="6"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Мінімум 6 символів"
+              />
+              <div class="text-xs text-gray-500 mt-1">Мінімум 6 символів</div>
+            </div>
+
+            <div>
+              <label
+                for="role"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Роль
+              </label>
+              <select
+                id="role"
+                name="role"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Оберіть роль</option>
+                <option value="super_admin">Супер Адмін</option>
+                <option value="user">Користувач</option>
+                <option value="viewer">Спостерігач</option>
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              class="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700"
+            >
+              Додати користувача
+            </button>
+          </form>
+        </div>
+
+        <!-- Список користувачів -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h2 class="text-xl font-semibold mb-4">Існуючі користувачі</h2>
+          <div class="space-y-3">
+            {% for username, user_data in users.items() %}
+            <div class="flex items-center justify-between p-3 border rounded">
+              <div>
+                <span class="font-medium">{{ username }}</span>
+                <span
+                  class="ml-2 px-2 py-1 text-xs rounded {% if user_data.role == 'super_admin' %}bg-purple-100 text-purple-800 {% elif user_data.role == 'user' %}bg-blue-100 text-blue-800 {% else %}bg-gray-100 text-gray-800{% endif %}"
+                >
+                  {% if user_data.role == 'super_admin' %}Супер Адмін {% elif
+                  user_data.role == 'user' %}Користувач {% else %}Спостерігач{%
+                  endif %}
+                </span>
+              </div>
+              <form
+                method="POST"
+                action="{{ url_for('delete_user', username=username) }}"
+                class="inline"
+              >
+                <input
+                  type="hidden"
+                  name="csrf_token"
+                  value="{{ csrf_token() }}"
+                />
+                <button
+                  type="submit"
+                  onclick="return confirm('Ви впевнені, що хочете видалити користувача {{ username }}?')"
+                  class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                >
+                  Видалити
+                </button>
+              </form>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-semibold mb-4">Інформація про ролі</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+          <div class="p-3 border rounded">
+            <h3 class="font-medium text-purple-800 mb-2">Супер Адмін</h3>
+            <ul class="space-y-1 text-gray-600">
+              <li>• Повний доступ до календаря</li>
+              <li>• Створення/редагування/видалення завдань</li>
+              <li>• Управління користувачами</li>
+              <li>• Доступ до адмін-панелі</li>
+            </ul>
+          </div>
+          <div class="p-3 border rounded">
+            <h3 class="font-medium text-blue-800 mb-2">Користувач</h3>
+            <ul class="space-y-1 text-gray-600">
+              <li>• Доступ до календаря</li>
+              <li>• Створення/редагування/видалення завдань</li>
+              <li>• Перегляд історії змін</li>
+            </ul>
+          </div>
+          <div class="p-3 border rounded">
+            <h3 class="font-medium text-gray-800 mb-2">Спостерігач</h3>
+            <ul class="space-y-1 text-gray-600">
+              <li>• Тільки перегляд календаря</li>
+              <li>• Не може змінювати завдання</li>
+              <li>• Доступ до історії змін</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Додаткова валідація форми
+      document
+        .getElementById("addUserForm")
+        .addEventListener("submit", function (e) {
+          const username = document.getElementById("username").value.trim();
+          const password = document.getElementById("password").value;
+          const role = document.getElementById("role").value;
+
+          // Перевірка імені користувача
+          if (username.length < 3) {
+            alert("Ім'я користувача повинно містити мінімум 3 символи");
+            e.preventDefault();
+            return;
+          }
+
+          if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+            alert("Ім'я користувача може містити тільки букви, цифри, _ та -");
+            e.preventDefault();
+            return;
+          }
+
+          // Перевірка пароля
+          if (password.length < 6) {
+            alert("Пароль повинен містити мінімум 6 символів");
+            e.preventDefault();
+            return;
+          }
+
+          // Перевірка ролі
+          if (!role) {
+            alert("Будь ласка, оберіть роль користувача");
+            e.preventDefault();
+            return;
+          }
+
+          // Підтвердження додавання
+          if (
+            !confirm(
+              `Ви впевнені, що хочете додати користувача "${username}" з роллю "${role}"?`
+            )
+          ) {
+            e.preventDefault();
+            return;
+          }
+        });
+
+      // Auto-hide flash messages
+      setTimeout(function () {
+        const alerts = document.querySelectorAll(
+          ".bg-red-100, .bg-green-100, .bg-blue-100"
+        );
+        alerts.forEach(function (alert) {
+          alert.style.transition = "opacity 0.5s";
+          alert.style.opacity = "0";
+          setTimeout(function () {
+            if (alert.parentNode) {
+              alert.remove();
+            }
+          }, 500);
+        });
+      }, 5000);
+    </script>
+  </body>
+</html>

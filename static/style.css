@@ -1,0 +1,318 @@
+.row {
+  display: flex;
+  position: relative;
+  height: 48px;
+}
+
+.plus-btn {
+  width: 32px;
+  height: 100%;
+  cursor: pointer;
+}
+
+.task {
+  position: absolute;
+  top: 4px;
+  height: 40px;
+  border-radius: 0.25rem;
+}
+
+.task.base {
+  background-color: #a8d1f0; /* Ніжно блакитний колір для основного прямокутника */
+}
+.task.extend {
+  background-color: rgba(
+    108,
+    161,
+    246,
+    0.7
+  ); /* Світліший блакитний колір для продовженого дедлайну, обезцвечений на 30% */
+}
+.task.shrink {
+  background-color: #dbeafe; /* Ніжний біло-блакитний колір для скороченого дедлайну (основна видима частина) */
+}
+
+/* Стиль для індикатора скорочення (пунктирна область) */
+.shrink-indicator.task.shrink {
+  background-color: transparent !important; /* Фон самої області робимо прозорим */
+  background-image: repeating-linear-gradient(
+    45deg,
+    #dbeafe,
+    /* Колір пунктирних ліній, такий самий як фон .task.shrink */ #dbeafe 10px,
+    transparent 10px,
+    transparent 20px
+  ) !important;
+  /* Важливо: цей елемент не повинен мати тінь, якщо основний .task її має,
+     щоб не було подвійної тіні. */
+  box-shadow: none !important;
+  border-radius: 0; /* Можливо, не потрібен border-radius, якщо це внутрішня частина */
+}
+
+.task .handle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 6px;
+  height: 100%;
+  cursor: ew-resize;
+}
+
+#calendar {
+  position: relative;
+  min-height: 0;
+  height: 100%;
+  scroll-behavior: smooth;
+}
+
+.current-day {
+  background-color: #93c5fd !important;
+  font-weight: 600;
+  border-left: 2px solid #2563eb;
+  border-right: 2px solid #2563eb;
+  position: relative;
+}
+
+/* Стиль для выходных дней (суббота і воскресенье) в заголовке */
+.weekend-column {
+  background-color: rgba(
+    253,
+    186,
+    217,
+    0.1
+  ); /* Полупрозрачный розовый цвет с прозрачностью 10% */
+}
+
+/* Стиль для выходных дней (суббота і воскресенье) в теле таблицы */
+.weekend-column-background {
+  background-color: rgba(
+    253,
+    186,
+    217,
+    0.1
+  ); /* Полупрозрачный розовый цвет с прозрачностью 10% */
+}
+
+/* Дополнительный стиль для плавного скролла */
+html {
+  scroll-behavior: smooth;
+}
+
+main {
+  scroll-behavior: smooth;
+
+  /* Стиль для круглой кнопки-индикатора статуса товара */
+  .status-circle {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    background-color: white; /* Начальный цвет - Белый */
+    margin-right: 8px;
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+/* Стили для модального окна заказов */
+.order-modal {
+  position: absolute !important; /* Изменено с fixed на absolute */
+  min-width: 600px; /* Минимальная ширина модального окна */
+  max-width: 90vw; /* Максимальная ширина - 90% ширины экрана */
+  max-height: 80vh; /* Максимальная высота - 80% высоты экрана */
+  overflow-y: auto; /* Добавляем вертикальную прокрутку при необходимости */
+  overflow-x: hidden; /* Скрываем горизонтальную прокрутку */
+  word-wrap: break-word; /* Переносим слова, которые не помещаются */
+  white-space: normal; /* Нормальный перенос текста */
+}
+
+/* Стили для категорий товаров */
+.order-modal .categories-container {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px; /* Уменьшенный отступ между категориями */
+  padding: 4px; /* Уменьшенный внутренний отступ */
+  overflow: visible;
+  min-width: 1200px; /* Минимальная ширина для всех категорий */
+}
+
+/* Стили для колонки категории */
+.order-modal .category-column {
+  flex: 1 1 200px; /* Уменьшаем базовый размер */
+  min-width: 200px; /* Уменьшаем минимальную ширину */
+  max-width: 300px; /* Уменьшаем максимальную ширину */
+  padding: 4px; /* Уменьшаем внутренние отступы */
+  border-radius: 4px;
+  background-color: rgba(249, 250, 251, 0.8);
+}
+
+/* Мерцающий эффект для текущего дня */
+@keyframes pulseToday {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+  }
+}
+
+/* Удалены стили для [data-sens-zone="true"] і [data-sens-zone="true"]:hover, так как sensorZone удалена */
+
+.plus-buttons-panel {
+  position: fixed !important;
+  left: 0 !important;
+  top: 89px !important;
+  height: calc(100vh - 89px) !important;
+  width: 32px !important;
+  background-color: rgba(168, 209, 240, 0.2);
+  opacity: 1 !important; /* Всегда видимый */
+  transform: translateX(0) !important; /* Всегда показан */
+  pointer-events: auto !important; /* Всегда активен */
+  z-index: 100 !important;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Стиль для отдельных кнопок "+" */
+.plus-button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 48px !important; /* Высота строки */
+  font-size: 1.44em !important; /* MODIFIED: 1.2em to 1.44em (20% increase) */
+  cursor: pointer !important;
+  transition: all 0.2s ease-in-out !important;
+  background-color: transparent; /* MODIFIED: Set button background to transparent, panel has background now */
+}
+
+/* Улучшенный hover эффект для кнопок */
+.plus-button:hover {
+  background-color: rgba(168, 209, 240, 0.4) !important;
+  transform: scale(1.1) !important;
+}
+
+/* Стиль для маркера 15% позиції */
+#position-marker {
+  opacity: 0;
+}
+
+#position-marker:hover {
+  opacity: 0.5;
+}
+
+/* Стили для размытия фона при активном модальном окне */
+.page-blur-effect {
+  /* This div will handle the blur */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* background-color: rgba(0,0,0,0.1); */ /* Optional: if you want a slight tint with the blur */
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px); /* For Safari */
+  z-index: 9990; /* IMPORTANT: Must be below the modal overlay and card */
+}
+
+/* Стили для карточки меню товаров */
+.order-goods-card {
+  position: fixed !important; /* Используем fixed для стабильного позиционирования при прокрутке */
+  max-width: 90vw !important;
+  width: auto !important; /* Автоматическая ширина в зависимости от содержимого */
+  min-width: 280px !important; /* Еще больше уменьшаем минимальную ширину */
+  max-height: none !important; /* Убираем ограничение по высоте */
+  overflow-y: visible !important; /* Отключаем вертикальный скролл */
+  overflow-x: visible !important; /* Отключаем горизонтальный скролл */
+  word-wrap: break-word !important;
+  white-space: normal !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+  border-radius: 8px !important;
+  z-index: 9999 !important; /* Увеличен z-index для отображения поверх всех элементов */
+  box-sizing: border-box !important; /* Гарантирует, что padding включен в размеры элемента */
+  overflow: visible !important; /* Убираем оба скролла */
+}
+
+/* Стили для контейнера категорий */
+.categories-container {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important; /* Уменьшенный отступ между элементами */
+  padding: 6px !important; /* Уменьшенные внутренние отступы */
+  min-width: 1200px !important;
+  margin-bottom: 6px !important; /* Уменьшенный отступ снизу */
+  overflow: visible !important; /* Отключаем скролл */
+}
+
+/* Дополнительные стили для гарантированного отображения модального окна товаров */
+body.modal-open .order-goods-card {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: all !important;
+}
+
+/* Отключаем скроллы для модального окна */
+.order-modal {
+  overflow-y: visible !important;
+  overflow-x: visible !important;
+}
+
+/* Стили для закладок складов */
+.warehouse-indicators {
+  margin-bottom: 2px !important;
+}
+
+.warehouse-indicators .tabs {
+  gap: 6px !important;
+}
+
+/* Убираем наложение закладок складов */
+.warehouse-indicators .tabs > div {
+  margin: 0 6px !important;
+  transform: scale(1.1) !important;
+  font-weight: normal !important;
+  border: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.warehouse-indicators .tabs > div:hover {
+  transform: scale(1.15) !important;
+}
+
+/* Стили для индикатора статуса вкладки склада */
+.warehouse-indicators .status-circle {
+  width: 20px !important; /* Увеличиваем размер до 20px */
+  height: 20px !important; /* Увеличиваем размер до 20px */
+  border-radius: 0 100% 100% 0 !important; /* Полукруг с плоской стороной слева */
+  margin-right: 10px !important; /* Увеличиваем отступ справа */
+  margin: 0 10px 0 0 !important; /* Убираем левый отступ, прижимаем к левому краю */
+  flex-shrink: 0 !important;
+  cursor: pointer !important;
+  border: none !important; /* Убираем серую обводку */
+  transition: all 0.2s ease !important; /* Изменено с transform на all для плавного изменения цвета */
+}
+
+.warehouse-indicators .status-circle:hover {
+  transform: scale(1.4) !important; /* Увеличено в 2 раза с 1.2 */
+}
+
+/* Фіксований хедер */
+.fixed-header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 200 !important; /* Вище за кнопки "+", які мають z-index: 100 */
+  background-color: white !important;
+  border-bottom: 1px solid #e5e7eb !important; /* border-gray-200 */
+}
+
+/* Відступ зверху для основного контенту, щоб компенсувати фіксований хедер */
+.main-content-with-fixed-header {
+  margin-top: 89px !important; /* Така ж висота як у кнопок "+" (top: 89px) */
+}

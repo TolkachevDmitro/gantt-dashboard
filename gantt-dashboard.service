@@ -1,0 +1,16 @@
+[Unit]
+Description=Gantt Dashboard Flask App
+After=network.target
+
+[Service]
+User=gantt_app
+Group=gantt_app
+WorkingDirectory=/home/gantt_app
+Environment=PATH=/home/gantt_app/gantt_env/bin
+Environment=FLASK_ENV=production
+Environment=SECRET_KEY=your-super-secret-key-here
+ExecStart=/home/gantt_app/gantt_env/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 app:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

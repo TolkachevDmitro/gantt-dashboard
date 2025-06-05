@@ -1,0 +1,155 @@
+/* Стили для окна лога изменений */
+.changes-log-container {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 1500px; /* Увеличено в 5 раз с 300px */
+  max-height: 600px; /* Увеличено вдвое с 300px */
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-size: 15.6px;
+  z-index: 1000;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.changes-log-title {
+  font-weight: bold;
+  font-size: 18.2px;
+  padding: 5px;
+  border-bottom: 1px solid #eee;
+  background-color: #f5f5f5;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.changes-log-entry {
+  padding: 3px 5px;
+  border-bottom: 1px dotted #eee;
+  line-height: 1.3;
+}
+
+.changes-log-entry:hover {
+  background-color: #f9f9f9;
+}
+
+.changes-log-date {
+  color: #666;
+}
+
+.changes-log-user {
+  font-weight: bold;
+  color: #333;
+}
+
+.changes-log-add {
+  color: #28a745;
+}
+
+.changes-log-delete {
+  color: #dc3545;
+}
+
+.changes-log-edit {
+  color: #007bff;
+}
+
+/* Кнопка для сворачивания/разворачивания лога */
+.changes-log-toggle {
+  position: fixed;
+  left: 0;
+  bottom: 600px; /* Увеличено вдвое с 300px */
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  padding: 2px 8px;
+  cursor: pointer;
+  font-size: 15.6px;
+  z-index: 1000;
+}
+
+.changes-log-container.collapsed {
+  height: 28px;
+  overflow: hidden;
+}
+
+/* Стиль для подсветки записи в логе при наведении */
+.changes-log-entry.log-entry-hover {
+  background-color: #e9f3ff;
+  cursor: pointer;
+  border-left: 3px solid #007bff;
+  padding-left: 2px;
+}
+
+/* Стиль для подсветки связанного прямоугольника */
+.task.highlight-rectangle {
+  outline: 3px solid rgba(0, 123, 255, 0.8) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 15px rgba(0, 123, 255, 0.6) !important;
+  z-index: 500 !important; /* Убеждаемся, что подсвеченный прямоугольник выше других */
+}
+
+/* Стиль для записей с удалением */
+.changes-log-entry.deleted-text {
+  color: #dc3545; /* Красный цвет для текста */
+  font-weight: bold; /* Делаем текст жирным для дополнительного выделения */
+}
+
+/* Делаем так, чтобы внутренние элементы в записях с удалением тоже наследовали красный цвет */
+.changes-log-entry.deleted-text span {
+  color: inherit;
+}
+
+/* Сохраняем специальные цвета для дат и пользователей */
+.changes-log-entry.deleted-text .changes-log-date {
+  color: #666;
+}
+
+.changes-log-entry.deleted-text .changes-log-user {
+  color: #333;
+}
+
+/* Стили для визуального отображения цветов */
+.color-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.color-rectangle {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  cursor: help;
+  vertical-align: middle;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.color-rectangle:hover {
+  border-color: #999;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Стили для круглых индикаторов статуса склада */
+.status-circle {
+  display: inline-block;
+  width: 10.4px;
+  height: 10.4px;
+  border-radius: 50%;
+  border: 1px solid;
+  cursor: help;
+  vertical-align: middle;
+  margin: 0 2px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.status-circle:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Календар‑Гант</title>
+    <!-- TailwindCSS CDN: швидко без білду -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- interact.js для drag & resize -->
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="stylesheet" href="/static/goods_item.css" />
+    <link rel="stylesheet" href="/static/changes-log.css" />
+  </head>
+  <body class="bg-white text-gray-800 h-screen flex flex-col">
+    <!-- ℹ️ basic header -->
+    <header
+      class="p-4 border-b flex items-center justify-between flex-shrink-0 fixed-header"
+    >
+      <h1 class="text-xl font-semibold">Календар‑дашборд (Gantt)</h1>
+      <div class="flex items-center space-x-4">
+        <span id="todayLabel" class="text-sm text-blue-700"></span>
+
+        <!-- User info and navigation -->
+        <div class="flex items-center space-x-3 text-sm">
+          <span class="text-gray-600">
+            Користувач: <strong>{{ user.username }}</strong>
+            <span
+              class="ml-1 px-2 py-1 text-xs rounded {% if user.role == 'super_admin' %}bg-purple-100 text-purple-800 {% elif user.role == 'user' %}bg-blue-100 text-blue-800 {% else %}bg-gray-100 text-gray-800{% endif %}"
+            >
+              {% if user.role == 'super_admin' %}Супер Адмін {% elif user.role
+              == 'user' %}Користувач {% else %}Спостерігач{% endif %}
+            </span>
+          </span>
+
+          <a
+            href="{{ url_for('profile') }}"
+            class="bg-gray-600 text-white px-3 py-1 rounded text-xs hover:bg-gray-700"
+            title="Профіль користувача"
+          >
+            Профіль
+          </a>
+
+          {% if user.is_super_admin() %}
+          <a
+            href="{{ url_for('admin_panel') }}"
+            class="bg-purple-600 text-white px-3 py-1 rounded text-xs hover:bg-purple-700"
+          >
+            Адмін-панель
+          </a>
+          {% endif %}
+
+          <a
+            href="{{ url_for('logout') }}"
+            class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700"
+          >
+            Вийти
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- 📅 календар‑контейнер -->
+    <main
+      id="calendar"
+      class="flex-1 overflow-auto main-content-with-fixed-header"
+    ></main>
+
+    <!-- 🔄  load front‑end logic after DOM ready -->
+    <script>
+      // Передаємо інформацію про користувача в JavaScript
+      window.userRole = "{{ user.role }}";
+      window.isViewer = {{ 'true' if user.role == 'viewer' else 'false' }};
+      window.canEdit = {{ 'true' if user.is_user() else 'false' }};
+      window.currentUsername = "{{ user.username }}"; // Додаємо ім'я користувача
+    </script>
+    <script src="/static/script.js"></script>
+    <!-- Скрипт для стилизации полей ввода -->
+    <script src="/static/input-number-style.js"></script>
+    <!-- Скрипт для логирования изменений в заказах -->
+    <script src="/static/script-fixed-order-logging.js"></script>
+    <!-- Скрипт для работы с логом изменений -->
+    <script src="/static/changes-log.js"></script>
+    <!-- Скрипт для обмеження функціональності спостерігачів -->
+    <script src="/static/user-permissions.js"></script>
+    <!-- Тестовий скрипт для кольорових індикаторів -->
+    <script src="/static/test-color-indicators-real.js"></script>
+
+    <!-- Контейнер для лога изменений -->
+    <div id="changes-log-toggle" class="changes-log-toggle">Лог змін</div>
+    <div id="changes-log-container" class="changes-log-container">
+      <div class="changes-log-title">Історія змін:</div>
+      <div id="changes-log-content"></div>
+    </div>
+  </body>
+</html>

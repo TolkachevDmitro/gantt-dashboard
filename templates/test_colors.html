@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Тест кольорів статусу складу</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='changes-log.css') }}"
+    />
+  </head>
+  <body style="padding: 20px; font-family: Arial, sans-serif">
+    <h1>Тест візуального відображення кольорів</h1>
+
+    <h2>1. Кольорові прямокутники (статуси завдань):</h2>
+    <div style="margin: 10px 0">
+      <span class="color-display"
+        >Колір:
+        <span
+          class="color-rectangle"
+          style="background-color: #ff0000"
+          title="#ff0000"
+        ></span
+      ></span>
+      <span class="color-display"
+        >Колір:
+        <span
+          class="color-rectangle"
+          style="background-color: #00ff00"
+          title="#00ff00"
+        ></span
+      ></span>
+      <span class="color-display"
+        >Колір:
+        <span
+          class="color-rectangle"
+          style="background-color: #0000ff"
+          title="#0000ff"
+        ></span
+      ></span>
+    </div>
+
+    <h2>2. Круглі індикатори (статуси складу):</h2>
+    <div style="margin: 10px 0">
+      <span class="color-display"
+        >Статус складу:
+        <span
+          class="status-circle"
+          style="background-color: #ff0000; border-color: #ff0000"
+          title="#ff0000"
+        ></span
+      ></span>
+      <span class="color-display"
+        >Статус складу:
+        <span
+          class="status-circle"
+          style="background-color: #00ff00; border-color: #00ff00"
+          title="#00ff00"
+        ></span
+      ></span>
+      <span class="color-display"
+        >Статус складу:
+        <span
+          class="status-circle"
+          style="background-color: #0000ff; border-color: #0000ff"
+          title="#0000ff"
+        ></span
+      ></span>
+      <span class="color-display"
+        >Статус складу:
+        <span
+          class="status-circle"
+          style="background-color: #ffff00; border-color: #ffff00"
+          title="#ffff00"
+        ></span
+      ></span>
+      <span class="color-display"
+        >Статус складу:
+        <span
+          class="status-circle"
+          style="background-color: #800080; border-color: #800080"
+          title="#800080"
+        ></span
+      ></span>
+    </div>
+
+    <h2>3. Змішані кольори (як в реальних логах):</h2>
+    <div style="margin: 10px 0">
+      <span class="color-display"
+        >Колір:
+        <span
+          class="color-rectangle"
+          style="background-color: #ff6600"
+          title="#ff6600"
+        ></span
+      ></span>
+      та
+      <span class="color-display"
+        >Статус складу:
+        <span
+          class="status-circle"
+          style="background-color: #ffff00; border-color: #ffff00"
+          title="#ffff00"
+        ></span
+      ></span>
+    </div>
+
+    <h2>4. Симуляція запису в логу:</h2>
+    <div
+      class="changes-log-entry"
+      style="
+        padding: 10px;
+        border: 1px solid #eee;
+        margin: 10px 0;
+        background-color: #f9f9f9;
+      "
+    >
+      <span class="changes-log-date">01.06.2025, 16:48:45</span> -
+      <span class="changes-log-user">Тестер</span>:
+      <span>Задача #test-004</span>
+      <span>Замовлення #ORD-2025-004</span>
+      <span>Тестовий товар 4</span>
+      <span>Очікування</span> →
+      <span class="changes-log-edit">В роботі</span>
+      <span class="color-display"
+        >Колір:
+        <span
+          class="color-rectangle"
+          style="background-color: #ff6600"
+          title="#ff6600"
+        ></span
+      ></span>
+      <span>Склад: VIP склад</span>
+      <span class="color-display"
+        >Статус складу:
+        <span
+          class="status-circle"
+          style="background-color: #ffff00; border-color: #ffff00"
+          title="#ffff00"
+        ></span
+      ></span>
+      <span
+        >(Подвійна зміна: статус складу (жовтий) та загальний статус
+        (помаранчевий))</span
+      >
+    </div>
+
+    <p>
+      <a href="/" style="color: #007bff; text-decoration: none"
+        >← Повернутися до головної сторінки</a
+      >
+    </p>
+
+    <script>
+      // Додаємо інтерактивність для демонстрації
+      document
+        .querySelectorAll(".color-rectangle, .status-circle")
+        .forEach((element) => {
+          element.addEventListener("click", function () {
+            alert("Колір: " + this.getAttribute("title"));
+          });
+        });
+    </script>
+  </body>
+</html>

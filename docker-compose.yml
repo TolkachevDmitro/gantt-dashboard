@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  gantt-dashboard:
+    build: .
+    ports:
+      - "80:5000"
+    environment:
+      - FLASK_ENV=production
+      - SECRET_KEY=your-super-secret-key-here
+    volumes:
+      - ./logs:/app/logs
+      - ./backups:/app/backups
+      - ./goods.xlsx:/app/goods.xlsx
+      - ./users.json:/app/users.json
+    restart: unless-stopped
+
+  # Опціонально: Nginx для проксування
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"  
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - gantt-dashboard
+    restart: unless-stopped

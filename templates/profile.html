@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Профіль користувача - Календар‑Гант</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold">Профіль користувача</h1>
+        <div class="space-x-4">
+          {% if user.is_super_admin() %}
+          <a
+            href="{{ url_for('admin_panel') }}"
+            class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+          >
+            Адмін-панель
+          </a>
+          {% endif %}
+          <a
+            href="{{ url_for('index') }}"
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Повернутися до календаря
+          </a>
+          <a
+            href="{{ url_for('logout') }}"
+            class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+          >
+            Вийти
+          </a>
+        </div>
+      </div>
+
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <div
+        class="mb-4 p-3 rounded {% if category == 'error' %}bg-red-100 text-red-700{% elif category == 'success' %}bg-green-100 text-green-700{% else %}bg-blue-100 text-blue-700{% endif %}"
+      >
+        {{ message }}
+      </div>
+      {% endfor %} {% endif %} {% endwith %}
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Інформація про користувача -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h2 class="text-xl font-semibold mb-4">
+            Інформація про обліковий запис
+          </h2>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Ім'я користувача</label
+              >
+              <div
+                class="px-3 py-2 border border-gray-300 rounded-md bg-gray-50"
+              >
+                {{ user.username }}
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Роль</label
+              >
+              <div
+                class="px-3 py-2 border border-gray-300 rounded-md bg-gray-50"
+              >
+                <span
+                  class="px-2 py-1 text-sm rounded {% if user.role == 'super_admin' %}bg-purple-100 text-purple-800 {% elif user.role == 'user' %}bg-blue-100 text-blue-800 {% else %}bg-gray-100 text-gray-800{% endif %}"
+                >
+                  {% if user.role == 'super_admin' %}Супер Адмін {% elif
+                  user.role == 'user' %}Користувач {% else %}Спостерігач{% endif
+                  %}
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Права доступу</label
+              >
+              <div
+                class="px-3 py-2 border border-gray-300 rounded-md bg-gray-50"
+              >
+                <ul class="text-sm space-y-1">
+                  {% if user.is_super_admin() %}
+                  <li>✅ Повний доступ до календаря</li>
+                  <li>✅ Створення/редагування/видалення завдань</li>
+                  <li>✅ Управління користувачами</li>
+                  <li>✅ Доступ до адмін-панелі</li>
+                  {% elif user.is_user() %}
+                  <li>✅ Доступ до календаря</li>
+                  <li>✅ Створення/редагування/видалення завдань</li>
+                  <li>✅ Перегляд історії змін</li>
+                  <li>❌ Управління користувачами</li>
+                  {% else %}
+                  <li>✅ Перегляд календаря</li>
+                  <li>✅ Перегляд історії змін</li>
+                  <li>❌ Створення/редагування завдань</li>
+                  <li>❌ Управління користувачами</li>
+                  {% endif %}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Зміна пароля -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h2 class="text-xl font-semibold mb-4">Зміна пароля</h2>
+          <form
+            method="POST"
+            action="{{ url_for('change_password') }}"
+            class="space-y-4"
+            id="changePasswordForm"
+          >
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <div>
+              <label
+                for="current_password"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Поточний пароль *
+              </label>
+              <input
+                type="password"
+                id="current_password"
+                name="current_password"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label
+                for="new_password"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Новий пароль *
+              </label>
+              <input
+                type="password"
+                id="new_password"
+                name="new_password"
+                required
+                minlength="6"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Мінімум 6 символів"
+              />
+              <div class="text-xs text-gray-500 mt-1">Мінімум 6 символів</div>
+            </div>
+
+            <div>
+              <label
+                for="confirm_password"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Підтвердження нового пароля *
+              </label>
+              <input
+                type="password"
+                id="confirm_password"
+                name="confirm_password"
+                required
+                minlength="6"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Повторіть новий пароль"
+              />
+            </div>
+
+            <button
+              type="submit"
+              class="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700"
+            >
+              Змінити пароль
+            </button>
+          </form>
+
+          <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
+            <p class="text-sm text-yellow-800">
+              <strong>Увага:</strong> Після зміни пароля вам потрібно буде
+              увійти в систему знову.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Валідація форми зміни пароля
+      document
+        .getElementById("changePasswordForm")
+        .addEventListener("submit", function (e) {
+          const currentPassword =
+            document.getElementById("current_password").value;
+          const newPassword = document.getElementById("new_password").value;
+          const confirmPassword =
+            document.getElementById("confirm_password").value;
+
+          // Перевірка довжини нового пароля
+          if (newPassword.length < 6) {
+            alert("Новий пароль повинен містити мінімум 6 символів");
+            e.preventDefault();
+            return;
+          }
+
+          // Перевірка співпадання паролів
+          if (newPassword !== confirmPassword) {
+            alert("Паролі не співпадають");
+            e.preventDefault();
+            return;
+          }
+
+          // Перевірка, що новий пароль відрізняється від поточного
+          if (currentPassword === newPassword) {
+            alert("Новий пароль повинен відрізнятися від поточного");
+            e.preventDefault();
+            return;
+          }
+
+          // Підтвердження зміни
+          if (!confirm("Ви впевнені, що хочете змінити пароль?")) {
+            e.preventDefault();
+            return;
+          }
+        });
+
+      // Перевірка співпадання паролів в реальному часі
+      document
+        .getElementById("confirm_password")
+        .addEventListener("input", function () {
+          const newPassword = document.getElementById("new_password").value;
+          const confirmPassword = this.value;
+
+          if (confirmPassword && newPassword !== confirmPassword) {
+            this.setCustomValidity("Паролі не співпадають");
+            this.style.borderColor = "#ef4444";
+          } else {
+            this.setCustomValidity("");
+            this.style.borderColor = "#d1d5db";
+          }
+        });
+
+      // Auto-hide flash messages
+      setTimeout(function () {
+        const alerts = document.querySelectorAll(
+          ".bg-red-100, .bg-green-100, .bg-blue-100"
+        );
+        alerts.forEach(function (alert) {
+          alert.style.transition = "opacity 0.5s";
+          alert.style.opacity = "0";
+          setTimeout(function () {
+            if (alert.parentNode) {
+              alert.remove();
+            }
+          }, 500);
+        });
+      }, 5000);
+    </script>
+  </body>
+</html>

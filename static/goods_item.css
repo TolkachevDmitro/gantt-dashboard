@@ -1,0 +1,266 @@
+/* Стили для элементов товаров в карточке заказа */
+.goods-item {
+  padding: 4px 4px !important; /* Уменьшенные отступы */
+  border-radius: 6px !important; /* Чуть более скругленные углы */
+  margin-bottom: 2px !important; /* Уменьшенный отступ снизу */
+  word-break: break-word !important;
+  white-space: normal !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  background-color: rgba(
+    243,
+    249,
+    255,
+    0.9
+  ) !important; /* Очень нежный голубоватый фон */
+  border: 1px solid rgba(214, 232, 254, 0.7) !important; /* Нежная голубоватая граница */
+  flex-wrap: nowrap !important; /* Запрещаем перенос элементов на новую строку */
+  transition: all 0.2s ease !important; /* Плавный переход для всех свойств */
+  width: 100% !important;
+  box-sizing: border-box !important;
+  box-shadow: 0 1px 2px rgba(186, 218, 255, 0.12) !important; /* Едва заметная голубоватая тень */
+}
+
+.goods-item:hover {
+  background-color: rgba(
+    237,
+    245,
+    255,
+    0.95
+  ) !important; /* Нежный голубоватый цвет при наведении */
+  border-color: rgba(
+    186,
+    218,
+    255,
+    0.8
+  ) !important; /* Более насыщенная но все еще нежная граница при наведении */
+}
+
+/* Улучшение стиля для категорий */
+.category-column {
+  flex: 1 1 250px !important;
+  min-width: 180px !important; /* Еще больше уменьшаем минимальную ширину */
+  max-width: 100% !important; /* Разрешаем использовать всю доступную ширину на узких экранах */
+  padding: 8px !important; /* Уменьшенные отступы */
+  border-radius: 8px !important;
+  background-color: rgba(
+    240,
+    249,
+    255,
+    0.95
+  ) !important; /* Нежный сине-голубой фон */
+  border: 1px solid rgba(209, 233, 255, 0.8) !important; /* Нежная голубоватая граница */
+  box-shadow: 0 1px 3px rgba(186, 218, 255, 0.15) !important; /* Нежная голубоватая тень */
+  margin-bottom: 12px !important; /* Отступ между категориями */
+  box-sizing: border-box !important;
+  width: 100% !important; /* На мобильных устройствах будет занимать всю ширину */
+}
+
+/* Заголовки категорий */
+.category-title {
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  color: #2563eb !important; /* Более нежный, но заметный синий цвет */
+  margin-bottom: 4px !important; /* Уменьшенный отступ */
+  padding-bottom: 2px !important; /* Уменьшенный отступ */
+  border-bottom: 1px solid rgba(191, 219, 254, 0.6) !important; /* Нежная голубая линия */
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8) !important; /* Легкий текстовый эффект */
+}
+
+/* Стили для контейнера товаров в категории */
+.goods-container {
+  max-height: none !important; /* Убираем ограничение по высоте */
+  overflow-y: visible !important; /* Убираем вертикальный скролл */
+  padding-right: 0 !important; /* Убираем отступ для скроллбара */
+}
+
+/* Стилизация полей ввода в меню товаров */
+.goods-item input[type="number"] {
+  min-width: 31px !important; /* Уменьшено на 30% от 45px */
+  max-width: 42px !important; /* Уменьшено на 30% от 60px */
+  width: auto !important; /* Автоматическая ширина в пределах указанных границ */
+  height: 28px !important;
+  padding: 2px 3px !important; /* Уменьшенные боковые отступы */
+  border: 1px solid rgba(191, 219, 254, 0.7) !important; /* Очень нежная голубая граница */
+  border-radius: 4px !important;
+  text-align: center !important;
+  font-size: 0.875rem !important; /* 14px */
+  outline: none !important;
+  transition: all 0.2s ease !important; /* Плавная анимация всех свойств */
+  /* Скрываем стрелки в input number для разных браузеров */
+  -moz-appearance: textfield !important;
+  appearance: textfield !important;
+  box-shadow: 0 0 2px rgba(186, 230, 253, 0.4) !important; /* Очень нежная голубая тень */
+  background-color: rgba(
+    240,
+    249,
+    255,
+    0.5
+  ) !important; /* Очень нежный голубой фон */
+}
+
+/* Стилизация инпута для ненулевых значений */
+.goods-item input[type="number"].non-zero-value {
+  font-weight: bold !important;
+  font-size: calc(
+    0.875rem * 1.1
+  ) !important; /* Увеличение исходного размера на 10% */
+  color: #3b82f6 !important; /* Более мягкий синий цвет для выделения */
+  border-color: #93c5fd !important; /* Нежно-голубая рамка */
+  background-color: rgba(219, 234, 254, 0.3) !important; /* Легкий синий фон */
+  box-shadow: 0 0 0 2px rgba(147, 197, 253, 0.2) !important; /* Нежное голубое свечение */
+  transform: scale(1.02) !important; /* Небольшое увеличение */
+  transition: all 0.2s ease !important; /* Плавная анимация всех свойств */
+}
+
+/* Скрыть стрелки для Chrome, Safari, Edge, Opera */
+.goods-item input[type="number"]::-webkit-outer-spin-button,
+.goods-item input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+.goods-item input[type="number"]:focus {
+  border-color: #93c5fd !important; /* Нежный голубой при фокусе */
+  box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.25) !important; /* Нежное голубое свечение */
+  background-color: rgba(
+    224,
+    242,
+    254,
+    0.6
+  ) !important; /* Очень светлый голубой фон */
+}
+
+/* Стили для разных статусов товаров */
+.status-available {
+  color: #047857 !important; /* Зеленый цвет для доступных товаров */
+  font-weight: 500 !important;
+}
+
+.status-limited {
+  color: #d97706 !important; /* Оранжевый цвет для товаров с ограниченным количеством */
+  font-weight: 500 !important;
+}
+
+.status-unavailable {
+  color: #dc2626 !important; /* Красный цвет для недоступных товаров */
+  font-weight: 500 !important;
+  text-decoration: line-through !important;
+}
+
+/* Индикатор статуса товара */
+.status-circle {
+  width: 15.6px !important; /* Увеличено на 30% с 12px */
+  height: 15.6px !important; /* Увеличено на 30% с 12px */
+  border-radius: 50% !important;
+  border: 1px solid #ccc !important;
+  flex-shrink: 0 !important;
+  margin-right: 12px !important; /* Увеличен с 8px до 12px */
+  margin: 0 12px 0 4px !important; /* Добавлены отступы со всех сторон */
+  transition: all 0.2s ease !important; /* Изменено с transform на all для плавного изменения цвета */
+}
+
+.status-circle:hover {
+  transform: scale(1.4) !important; /* Усиленный эффект при наведении */
+}
+
+/* Адаптивные стили для текстовых элементов в карточке товаров */
+.goods-item label {
+  flex: 1 1 auto !important; /* Растягивать и сжимать по необходимости */
+  min-width: 0 !important; /* Важно для корректной работы text-overflow */
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  margin-right: 8px !important;
+}
+
+/* Стили для группы элементов управления */
+.goods-item .controls-group {
+  display: flex !important;
+  flex: 0 0 auto !important; /* Не растягивать, не сжимать */
+  align-items: center !important;
+  gap: 4px !important;
+  margin-left: auto !important; /* Прижимаем к правому краю */
+}
+
+/* Стили для адаптивных кнопок в меню товаров */
+.goods-item button {
+  min-width: 24px !important;
+  padding: 0px 6px !important;
+  height: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  background-color: rgba(
+    219,
+    234,
+    254,
+    0.7
+  ) !important; /* Очень нежный голубой фон */
+  color: #3b82f6 !important; /* Средний голубой текст */
+  border: 1px solid rgba(147, 197, 253, 0.6) !important; /* Нежная голубая граница */
+  border-radius: 4px !important; /* Скругленные углы */
+  transition: all 0.2s ease !important; /* Плавная анимация */
+  box-shadow: 0 1px 2px rgba(186, 230, 253, 0.3) !important; /* Очень мягкая тень */
+}
+
+/* Эффект при наведении на кнопки */
+.goods-item button:hover {
+  background-color: rgba(
+    191,
+    219,
+    254,
+    0.8
+  ) !important; /* Чуть более насыщенный, но всё ещё нежный голубой */
+  box-shadow: 0 0 3px rgba(147, 197, 253, 0.4) !important; /* Нежное голубое свечение */
+  transform: translateY(-1px) !important; /* Лёгкий эффект "парения" */
+}
+
+/* Стили для улучшения адаптивности в карточке заказа */
+.categories-wrapper {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Стили для контейнера с кнопками "Сохранить", "Отмена" и т.д. */
+.action-buttons-container {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  justify-content: flex-end !important;
+  margin-top: 12px !important;
+  width: 100% !important;
+}
+
+/* Специальный стиль для маленьких экранов */
+@media (max-width: 480px) {
+  .action-buttons-container {
+    justify-content: space-between !important;
+  }
+
+  .action-buttons-container button {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .goods-item {
+    padding: 8px 6px !important;
+  }
+
+  .goods-item label {
+    width: 100% !important;
+    margin-bottom: 4px !important;
+  }
+
+  .goods-item .controls-group {
+    margin-top: 4px !important;
+    justify-content: flex-end !important;
+    width: 100% !important;
+  }
+}
